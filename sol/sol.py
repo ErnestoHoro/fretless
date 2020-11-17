@@ -27,6 +27,28 @@ class Sol:
             'G4': 'cyan',
         }
 
+        # (experiment) generic scale (A major)
+        self.colored_notes = {
+            'A': 'red',
+            'B': 'green',
+            'C#': 'green',
+            'D': 'green',
+            'E': 'green',
+            'F#': 'green',
+            'G#': 'green',
+        }
+
+        # (experiment) generic scale (A minor pentatonic)
+        self.colored_notes = {
+            'A': 'red',
+            'C': 'green',
+            'D': 'green',
+            'D#': 'blue',
+            'E': 'green',
+            'F': 'blue',
+            'G': 'green',
+        }
+
         self.tuning = tuning
         self.tuning_notation = self.tunings[tuning]['notation']
         self.tuning_description = self.tunings[tuning]['description']
@@ -38,7 +60,7 @@ class Sol:
         #       Add: :highlight-color, :special-sign, ':special-meaning', etc.
         #       Add: Additional methods to alternate attributes.
         #       Add: ~~Kinda full barre matches or something...
-        #       Add: Map rather real life alternative notes (Bb instead of A#). -> look them up
+        #       Add: Map rather real life alternative notes (B♭/b instead of A#). -> look them up
         f_gen = get_frequency_generator()
         n_gen = get_notes_generator()
 
@@ -51,7 +73,7 @@ class Sol:
 
             # get note and attributes
             frequency_in_hz = next(f_gen)
-            note = next(n_gen)
+            note = next(n_gen)  # Todo: Convert pitch to real-life type (sharp AND flat notation).
             note_long = f'{note}{index_chromatic_scale}'
 
             # update open string indices by tuning
@@ -75,12 +97,14 @@ class Sol:
                             'note_id': note_id,
                             'freq_hz': frequency_in_hz,
                             'color': self._get_color(note_long),
+                            'pitch': self._get_pitch(note_long),
                         }
                     }
                 }
                 self._update_dictionary(self.fretboard, fretboard_update)
 
         self.fretboard = dict(sorted(self.fretboard.items()))
+        # print(self.fretboard)
 
     def _update_dictionary(self, dict_base, dict_update):
         """Update nested dictionary with another dictionary."""
@@ -92,10 +116,24 @@ class Sol:
                 dict_base[key] = copy.deepcopy(value)
 
     def _get_color(self, note_long):
+        # Todo: Add secondary parameters, e.g. frequency range (or add get_highlight,
+        #  get_background, etc.).
+        # Todo: Match global if not endswith digit.
         if note_long in self.colored_notes:
             return self.colored_notes.get(note_long)
+        elif note_long[:-1] in self.colored_notes:
+            return self.colored_notes.get(note_long[:-1])
         else:
             return self.note_color_default
+
+    @staticmethod
+    def _get_pitch(note_long):
+        if any((char in '#') for char in note_long):
+            return 'sharp'
+        elif any((char in 'b') for char in note_long):
+            return 'flat'
+        else:
+            return ''
 
     def _print_fretboard_header(self):
         # title
@@ -137,6 +175,16 @@ class Sol:
                 freq_hz = attributes['freq_hz']
                 color = attributes['color']
                 print(colored(freq_hz.rjust(self.note_padding), color) + ' |', end=' ')
+            print()
+
+        print()
+
+        # pitch
+        for string_id, string_notes in reversed(self.fretboard.items()):
+            for _, attributes in string_notes.items():
+                pitch = attributes['pitch']
+                color = attributes['color']
+                print(colored(pitch.center(self.note_padding), color) + ' |', end=' ')
             print()
 
     def main(self):
