@@ -1,6 +1,9 @@
 import copy
+from collections.abc import Mapping
 
-from resources import TUNINGS
+import colorama
+from resources import TUNINGS, NUMBER_OF_FRETS, NOTE_COLOR_DEFAULT, NOTE_PADDING
+from termcolor import colored
 from tools import get_frequency_generator, get_notes_generator
 
 """
@@ -10,86 +13,125 @@ sol - A command line music tool
 
 class Sol:
 
-    def __init__(self):
+    def __init__(self, tuning='E-A-D-G-B-E'):
         self.tunings = TUNINGS
+        self.number_of_frets = NUMBER_OF_FRETS
+        self.note_color_default = NOTE_COLOR_DEFAULT
+        self.note_padding = NOTE_PADDING
 
-    @staticmethod
-    def create_fretboard_matrices(tuning):
-        matrix_fretboard_notes = [[] for _ in range(len(tuning))]
-        matrix_fretboard_frequencies = copy.deepcopy(matrix_fretboard_notes)
+        # available text colors: red, green, yellow, blue, magenta, cyan, white
+        self.colored_notes = {
+            'F2': 'green',
+            'C3': 'red',
+            'A#4': 'yellow',
+            'G4': 'cyan',
+        }
 
+        self.tuning_notation = self.tunings[tuning]['notation']
+        self.fretboard = {}
+
+    def create_fretboard(self, tuning_notation):
+        # Todo: Create them as Dicts rather than Lists.
+        #       Add: :highlight-color, :special-sign, ':special-meaning', etc.
+        #       Add: Additional methods to alternate attributes.
+        #       Add: ~~Kinda full barre matches or something...
+        #       Add: Map rather real life alternative notes (Bb instead of A#). -> look them up
         f_gen = get_frequency_generator()
         n_gen = get_notes_generator()
 
         indices_open_strings = []
-
         index_chromatic_scale = 0
         for index_note in range(3, 100):
             # update chromatic index (e.g. A0)
             if index_note % 12 == 0:
                 index_chromatic_scale = index_note // 12
 
+            # get note and attributes
             frequency_in_hz = next(f_gen)
             note = next(n_gen)
             note_long = f'{note}{index_chromatic_scale}'
 
-            # update open string indices
-            for i, note_tuning_open in enumerate(tuning):
+            # update open string indices by tuning
+            for i, note_tuning_open in enumerate(tuning_notation):
                 if note_long == note_tuning_open:
                     indices_open_strings.append(i)
 
-            # populate matrices (to a maximum of 25 notes per string)
+            # update fretboard
             for index_string in indices_open_strings:
-                if len(matrix_fretboard_notes[index_string]) <= 24:
-                    matrix_fretboard_notes[index_string].append(note_long)
-                    matrix_fretboard_frequencies[index_string].append(frequency_in_hz)
-
-        matrix_fretboard_notes.reverse()
-        matrix_fretboard_frequencies.reverse()
-
-        return matrix_fretboard_notes, matrix_fretboard_frequencies
-
-    def print_fretboards(self):
-        for tuning_id, tuning_attributes in self.tunings.items():
-            # title
-            print(f"[ {tuning_id} | {tuning_attributes['description']} ]")
-            print()
-
-            # fret dots
-            for i in range(25):
-                if i in (3, 5, 7, 9, 15, 17, 19, 21):
-                    print('•'.center(7) + ' |', end=' ')
-                elif i in (12, 24):
-                    print('••'.center(7) + ' |', end=' ')
+                if self.fretboard.get(index_string):
+                    note_id = len(self.fretboard.get(index_string))
                 else:
-                    print(' '.center(7) + ' |', end=' ')
+                    note_id = 0
+
+                if not note_id <= self.number_of_frets:
+                    continue
+
+                fretboard_update = {
+                    index_string: {
+                        note_long: {
+                            'note_id': note_id,
+                            'freq_hz': frequency_in_hz,
+                            'color': self._get_color(note_long),
+                        }
+                    }
+                }
+                self._update_dictionary(self.fretboard, fretboard_update)
+
+        self.fretboard = dict(sorted(self.fretboard.items()))
+
+    def _update_dictionary(self, dict_base, dict_update):
+        """Update nested dictionary with another dictionary."""
+        for key, value in dict_update.items():
+            value_base = dict_base.get(key)
+            if isinstance(value, Mapping) and isinstance(value_base, Mapping):
+                self._update_dictionary(value_base, value)  # recursive call
+            else:
+                dict_base[key] = copy.deepcopy(value)
+
+    def _get_color(self, note_long):
+        if note_long in self.colored_notes:
+            return self.colored_notes.get(note_long)
+        else:
+            return self.note_color_default
+
+    def _print_fretboard_header(self):
+        # frets dots
+        for i in range(self.number_of_frets + 1):
+            if i in (3, 5, 7, 9, 15, 17, 19, 21):
+                print('•'.center(self.note_padding) + ' |', end=' ')
+            elif i in (12, 24):
+                print('••'.center(self.note_padding) + ' |', end=' ')
+            else:
+                print(' '.center(self.note_padding) + ' |', end=' ')
+        print()
+
+        # frets indices
+        print(*[str(i).center(self.note_padding) + ' |' for i in range(self.number_of_frets + 1)])
+        print()
+
+    def print_fretboard(self):
+        colorama.init()
+
+        # header
+        self._print_fretboard_header()
+
+        # notes
+        for string_id, string_notes in reversed(self.fretboard.items()):
+            for note, attributes in string_notes.items():
+                color = attributes['color']
+                print(colored(note.center(self.note_padding), color) + ' |', end=' ')
             print()
 
-            # fret number
-            print(*[str(i).center(7) + ' |' for i in range(25)])
-            print()
+        print()
 
-            # notes
-            for string in tuning_attributes['fretboard-notes']:
-                print(*[note.center(7) + ' |' for note in string])
-            print()
-
-            # frequencies
-            for string in tuning_attributes['fretboard-frequencies']:
-                print(*[freq.rjust(7) + ' |' for freq in string])
+        # frequencies
+        for string_id, string_notes in reversed(self.fretboard.items()):
+            for _, attributes in string_notes.items():
+                freq_hz = attributes['freq_hz']
+                color = attributes['color']
+                print(colored(freq_hz.center(self.note_padding), color) + ' |', end=' ')
             print()
 
     def main(self):
-        for tuning_id, tuning_attributes in self.tunings.items():
-            tuning = tuning_attributes['notation']
-            matrix_fretboard_notes, matrix_fretboard_frequencies = \
-                self.create_fretboard_matrices(tuning)
-
-            self.tunings[tuning_id]['fretboard-notes'] = matrix_fretboard_notes
-            self.tunings[tuning_id]['fretboard-frequencies'] = matrix_fretboard_frequencies
-
-
-if __name__ == '__main__':
-    sol = Sol()
-    sol.main()
-    sol.print_fretboards()
+        self.create_fretboard(self.tuning_notation)
+        self.print_fretboard()
