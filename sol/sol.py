@@ -27,7 +27,10 @@ class Sol:
             'G4': 'cyan',
         }
 
+        self.tuning = tuning
         self.tuning_notation = self.tunings[tuning]['notation']
+        self.tuning_description = self.tunings[tuning]['description']
+
         self.fretboard = {}
 
     def create_fretboard(self, tuning_notation):
@@ -95,6 +98,10 @@ class Sol:
             return self.note_color_default
 
     def _print_fretboard_header(self):
+        # title
+        print(f"[ {self.tuning} | {self.tuning_description} ]")
+        print()
+
         # frets dots
         for i in range(self.number_of_frets + 1):
             if i in (3, 5, 7, 9, 15, 17, 19, 21):
@@ -129,7 +136,7 @@ class Sol:
             for _, attributes in string_notes.items():
                 freq_hz = attributes['freq_hz']
                 color = attributes['color']
-                print(colored(freq_hz.center(self.note_padding), color) + ' |', end=' ')
+                print(colored(freq_hz.rjust(self.note_padding), color) + ' |', end=' ')
             print()
 
     def main(self):
