@@ -48,15 +48,6 @@ SCALES = {
     # Todo
 }
 
-PITCH_RANGES_VOICE = {
-    ('F2', 'F4'): 'Bass',
-    ('A2', 'A4'): 'Baritone',
-    ('C3', 'C5'): 'Tenor',
-    ('F3', 'F5'): 'Alto (Contralto)',
-    ('A3', 'A5'): 'Mezzo-Soprano',
-    ('C4', 'C6'): 'Soprano',
-}
-
 """Note: In MIDI software the middle C can differ from the classical piano specification (C3-C5)."""
 C_OCTAVES = {
     'C0': {
@@ -114,4 +105,13 @@ C_OCTAVES = {
         'name_long': 'seven-lined',
         'name_alt': 'quintuple high C',
     },
+}
+
+PITCH_RANGES_VOICE = {
+    ('F2', 'F4'): 'Bass',
+    ('A2', 'A4'): 'Baritone',
+    ('C3', 'C5'): 'Tenor',
+    ('F3', 'F5'): 'Alto (Contralto)',
+    ('A3', 'A5'): 'Mezzo-Soprano',
+    ('C4', 'C6'): 'Soprano',
 }
