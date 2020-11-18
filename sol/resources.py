@@ -57,6 +57,61 @@ PITCH_RANGES_VOICE = {
     ('C4', 'C6'): 'Soprano',
 }
 
-PITCH_INDICES = {
-    'C4': 'Middle C',
+"""Note: In MIDI software the middle C can differ from the classical piano specification (C3-C5)."""
+C_OCTAVES = {
+    'C0': {
+        'name_short': 'C͵͵',
+        'name_long': 'subcontra',
+        'name_alt': '',
+    },
+    'C1': {
+        'name_short': 'C͵',
+        'name_long': 'contra',
+        'name_alt': '',
+    },
+    'C2': {
+        'name_short': 'C',
+        'name_long': 'great',
+        'name_alt': "low/cello C, 8' C'",
+    },
+    'C3': {
+        'name_short': 'c',
+        'name_long': 'small',
+        'name_alt': "tenor C, 4' C",
+    },
+    'C4': {
+        'name_short': 'c′',
+        'name_long': 'one-lined',
+        'name_alt': 'middle C (classical piano)',
+    },
+    'C5': {
+        'name_short': 'c′′',
+        'name_long': 'two-lined',
+        'name_alt': 'high/top/treble C',
+    },
+    'C6': {
+        'name_short': 'c′′′',
+        'name_long': 'three-lined',
+        'name_alt': '(high)/top/soprano C',
+    },
+    'C7': {
+        'name_short': 'c′′′′',
+        'name_long': 'four-lined',
+        'name_alt': 'double high C',
+    },
+    'C8': {
+        'name_short': 'c′′′′′',
+        'name_long': 'five-lined',
+        'name_alt': 'triple high C',
+    },
+    'C9': {
+        'name_short': 'c′′′′′′',
+        'name_long': 'six-lined',
+        'name_alt': 'quadruple high C',
+    },
+    'C10': {
+        'name_short': 'c′′′′′′′',
+        'name_long': 'seven-lined',
+        'name_alt': 'quintuple high C',
+    },
 }

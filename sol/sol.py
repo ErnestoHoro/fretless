@@ -1,19 +1,17 @@
 import copy
 from collections.abc import Mapping
 
+import click as click
 import colorama
+import resources_classes
 from resources import TUNINGS, NUMBER_OF_FRETS, NOTE_COLOR_DEFAULT, NOTE_PADDING
 from termcolor import colored
 from tools import get_frequency_generator, get_notes_generator
 
-"""
-sol - A command line music tool
-"""
-
 
 class Sol:
 
-    def __init__(self, tuning='E-A-D-G-B-E'):
+    def __init__(self, verbose=False, tuning='E-A-D-G-B-E'):
         colorama.init()
 
         # assign defaults
@@ -69,8 +67,9 @@ class Sol:
 
         indices_open_strings = []
         index_chromatic_scale = 0
-        for index_note in range(108):
-            # update chromatic index (e.g. A0)
+        # octaves C0 to C10 (C-1 is ignored)
+        for index_note in range(132):
+            # update octave/chromatic index (e.g. A0)
             if index_note % 12 == 0:
                 index_chromatic_scale = index_note // 12
 
@@ -191,6 +190,47 @@ class Sol:
                 print(colored(pitch.center(self.note_padding), color) + ' |', end=' ')
             print()
 
+    @classmethod
+    def print_tunings(cls):
+        """Prints tunings available for rendering a fretboard."""
+        print(resources_classes.Tunings().__str__())
+
+    @classmethod
+    def print_c_octaves(cls):
+        """Prints a table showing progression of octaves from C0-C10."""
+        print(resources_classes.COctaves().__str__())
+
     def main(self):
         self.create_fretboard(self.tuning_notation)
         self.print_fretboard()
+
+
+# -- command line interface & user documentation -----------------------------------------------/100
+
+@click.command(options_metavar='<options>')
+@click.option('--print-tunings', is_flag=True,
+              help='Prints tunings available for rendering a fretboard.')
+@click.option('--print-c-octaves', is_flag=True,
+              help='Prints a table showing progression of octaves from C0-C10.')
+@click.option('--verbose', is_flag=True,
+              help='Will print verbose/debug messages.')
+def cli(print_tunings, print_c_octaves, verbose):
+    """sol - A command line music tool
+
+    Renders a text based fretboard.
+    """
+    if verbose:
+        click.echo(f'Passed arguments: {print_tunings=} {print_c_octaves=}')
+
+    if print_tunings:
+        Sol().print_tunings()
+
+    if print_c_octaves:
+        Sol().print_c_octaves()
+
+    if not any((print_tunings, print_c_octaves)):
+        Sol(verbose).main()
+
+
+if __name__ == '__main__':
+    cli()
