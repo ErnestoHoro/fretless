@@ -8,9 +8,6 @@ verify_ssl = true
 [packages]
 click = "*"
 colorama = "*"
-resources = "*"
-tools = "*"
-sol = "*"
 termcolor = "*"
 
 [requires]

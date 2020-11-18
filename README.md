@@ -1,3 +1,3 @@
-# sol
+# fretless
 
-![sol-preview-fretboard](assets/sol_preview_fretboard.PNG)
+![fretless-preview](assets/fretless_preview.PNG)

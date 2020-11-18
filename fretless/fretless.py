@@ -9,7 +9,7 @@ from termcolor import colored
 from tools import get_frequency_generator, get_notes_generator
 
 
-class Sol:
+class Fretless:
 
     def __init__(self, verbose=False, tuning='E-A-D-G-B-E'):
         colorama.init()
@@ -220,13 +220,13 @@ class Sol:
 # Todo: Add tuning argument (lists should be allowed).
 # Todo: Add export option (--save). Ensure color sequences are removed.
 def cli(print_tunings, print_c_octaves, verbose):
-    """sol - A command line music tool
+    """fretless - A command line music tool
 
     \b
-                |
-      __|  _ \  |
-    \__ \ (   | |
-    ____/\___/ _|
+      _|          |    |
+     |    __| _ \ __|  |   _ \   __|   __|  ┏ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ┓
+     __| |    __/ |    |   __/ \__ \ \__ \  ┃ github.com/ErnestoHoro/fretless ┃
+    _|  _|  \___|\__| _| \___| ____/ ____/  ┗ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ┛
 
     Renders a text based fretboard for different string instruments by a given tuning (id).
 
@@ -237,22 +237,19 @@ def cli(print_tunings, print_c_octaves, verbose):
     * context specific customizable colorized print
       (e.g. C#4 and all B in yellow, by scale or similar)
 
-    This tool was named 'sol' one for the sun and two for solfeggio to indicate this is about
-    getting in tune with the worlds vibrations - and because 3 chars are just neatly short.
-
-    Have a good time.
+    Have a good time and fret less.
     """
     if verbose:
         click.echo(f'Passed arguments: {print_tunings=} {print_c_octaves=}')
 
     if print_tunings:
-        Sol().print_tunings()
+        Fretless().print_tunings()
 
     if print_c_octaves:
-        Sol().print_c_octaves()
+        Fretless().print_c_octaves()
 
     if not any((print_tunings, print_c_octaves)):
-        Sol(verbose).main()
+        Fretless(verbose).main()
 
 
 if __name__ == '__main__':
