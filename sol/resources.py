@@ -43,6 +43,11 @@ TUNINGS = {
         'notation': ('D3', 'G3', 'B3', 'E4')
     },
 }
+
+SCALES = {
+    # Todo
+}
+
 PITCH_RANGES_VOICE = {
     ('F2', 'F4'): 'Bass',
     ('A2', 'A4'): 'Baritone',
