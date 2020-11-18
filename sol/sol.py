@@ -14,6 +14,9 @@ sol - A command line music tool
 class Sol:
 
     def __init__(self, tuning='E-A-D-G-B-E'):
+        colorama.init()
+
+        # assign defaults
         self.tunings = TUNINGS
         self.number_of_frets = NUMBER_OF_FRETS
         self.note_color_default = NOTE_COLOR_DEFAULT
@@ -66,15 +69,18 @@ class Sol:
 
         indices_open_strings = []
         index_chromatic_scale = 0
-        for index_note in range(3, 100):
+        for index_note in range(108):
             # update chromatic index (e.g. A0)
             if index_note % 12 == 0:
                 index_chromatic_scale = index_note // 12
 
             # get note and attributes
-            frequency_in_hz = next(f_gen)
+            freq_in_hz = next(f_gen)
             note = next(n_gen)  # Todo: Convert pitch to real-life type (sharp AND flat notation).
             note_long = f'{note}{index_chromatic_scale}'
+
+            # index_note=0 note_long='C0' freq_in_hz='16.35' (1st)
+            # print(f'{index_note=} {note_long=} {freq_in_hz=}')  # Todo: Add logger.debug().
 
             # update open string indices by tuning
             for i, note_tuning_open in enumerate(tuning_notation):
@@ -95,7 +101,7 @@ class Sol:
                     index_string: {
                         note_long: {
                             'note_id': note_id,
-                            'freq_hz': frequency_in_hz,
+                            'freq_hz': freq_in_hz,
                             'color': self._get_color(note_long),
                             'pitch': self._get_pitch(note_long),
                         }
@@ -137,7 +143,7 @@ class Sol:
 
     def _print_fretboard_header(self):
         # title
-        print(f"[ {self.tuning} | {self.tuning_description} ]")
+        print(colored(f"[ {self.tuning} | {self.tuning_description} ]", attrs=['reverse', 'bold']))
         print()
 
         # frets dots
@@ -155,8 +161,6 @@ class Sol:
         print()
 
     def print_fretboard(self):
-        colorama.init()
-
         # header
         self._print_fretboard_header()
 
