@@ -160,6 +160,9 @@ class Sol:
         print()
 
     def print_fretboard(self):
+        # Todo: Should optionally also be saved to a file. (generic file_io method)
+        # Todo: Externalize creation of formatted representation to resources_classes.
+
         # header
         self._print_fretboard_header()
 
@@ -214,10 +217,30 @@ class Sol:
               help='Prints a table showing progression of octaves from C0-C10.')
 @click.option('--verbose', is_flag=True,
               help='Will print verbose/debug messages.')
+# Todo: Add tuning argument (lists should be allowed).
+# Todo: Add export option (--save). Ensure color sequences are removed.
 def cli(print_tunings, print_c_octaves, verbose):
     """sol - A command line music tool
 
-    Renders a text based fretboard.
+    \b
+                |
+      __|  _ \  |
+    \__ \ (   | |
+    ____/\___/ _|
+
+    Renders a text based fretboard for different string instruments by a given tuning (id).
+
+    \b
+    Render options included:
+    * exact notes (e.g. C4, D#5)
+    * frequencies (rounding option)
+    * context specific customizable colorized print
+      (e.g. C#4 and all B in yellow, by scale or similar)
+
+    This tool was named 'sol' one for the sun and two for solfeggio to indicate this is about
+    getting in tune with the worlds vibrations - and because 3 chars are just neatly short.
+
+    Have a good time.
     """
     if verbose:
         click.echo(f'Passed arguments: {print_tunings=} {print_c_octaves=}')

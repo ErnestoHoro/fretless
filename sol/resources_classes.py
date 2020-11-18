@@ -2,6 +2,12 @@ from dataclasses import dataclass, field
 
 from resources import C_OCTAVES, TUNINGS
 
+"""Class wrapping configurations from resources.py in Python dataclasses.
+
+Mainly targets to encapsulate the creation of formatted string representations for end user views 
+(STDOUT or text file). 
+"""
+
 
 @dataclass
 class COctaves:
