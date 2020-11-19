@@ -15,13 +15,14 @@ class Fretless:
     TUNINGS = Tunings()
     C_OCTAVES = COctaves()
 
-    def __init__(self, tuning_id='E-A-D-G-B-E', verbose=False):
+    def __init__(self, tuning_id='E-A-D-G-B-E', a_pitch_hz=440, verbose=False):
         colorama.init()
 
         self.number_of_frets = NUMBER_OF_FRETS
         self.note_color_default = NOTE_COLOR_DEFAULT
 
         self.tuning_id = tuning_id
+        self.a_pitch_hz = a_pitch_hz
         self.verbose = verbose
 
         self.fretboard_printer = FretboardPrinter()
@@ -48,7 +49,7 @@ class Fretless:
 
         fretboard = {}
 
-        f_gen = get_frequency_generator()
+        f_gen = get_frequency_generator(a_pitch_hz=self.a_pitch_hz)
         n_gen = get_notes_generator()
 
         indices_open_strings = []
@@ -98,6 +99,7 @@ class Fretless:
         self.fretboard_printer.fretboard = self.fretboard
         self.fretboard_printer.tuning_id = self.tuning_id
         self.fretboard_printer.tuning_description = tuning_description
+        self.fretboard_printer.a_pitch_hz = self.a_pitch_hz
 
     def _update_dictionary(self, dict_base, dict_update):
         """Update nested dictionary with another dictionary."""
@@ -127,13 +129,15 @@ class Fretless:
 # -- command line interface & user documentation -----------------------------------------------/100
 
 @click.command(options_metavar='<options>')
+@click.option('--a-pitch-hz', default=440, type=int, show_default=True,
+              help='A4 target frequency in Hz.')
 @click.option('--print-c-octaves', is_flag=True,
               help='Prints a table showing progression of octaves from C0-C10.')
 @click.option('--verbose', is_flag=True,
               help='Will print verbose/debug messages.')
 # Todo: Add export option (--save). Ensure color sequences are removed.
 # Todo: Add signal handler nearby.
-def cli(print_c_octaves, verbose):
+def cli(a_pitch_hz, print_c_octaves, verbose):
     """fretless - A command line music tool
 
     \b
@@ -153,7 +157,7 @@ def cli(print_c_octaves, verbose):
 
     Have a good time and fret less.
     """
-    fretless = Fretless(verbose=verbose)
+    fretless = Fretless(a_pitch_hz=a_pitch_hz, verbose=verbose)
 
     if print_c_octaves:
         print(fretless.C_OCTAVES)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Union
 
 from resources import NUMBER_OF_FRETS, NOTE_PADDING
 from termcolor import colored
@@ -9,14 +10,16 @@ class FretboardPrinter:
     fretboard: dict = None
     tuning_id: str = None
     tuning_description: str = None
+    a_pitch_hz: Union[int, float] = None
 
     note_padding: int = field(default_factory=lambda: NOTE_PADDING)
     number_of_frets: int = field(default_factory=lambda: NUMBER_OF_FRETS)
 
     def _print_header(self):
         # title
-        print(colored(f"[ {self.tuning_id} | {self.tuning_description} ]",
-                      attrs=['reverse', 'bold']))
+        print(colored(
+            f"[ {self.tuning_id} | {self.tuning_description} ]", attrs=['reverse', 'bold']),
+            f"[ A4={str(self.a_pitch_hz)}Hz ]")
         print()
 
         # frets dots
