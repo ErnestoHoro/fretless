@@ -38,7 +38,6 @@ class FretboardPrinter:
         print()
 
     def print_fretboard(self):
-        # Todo: Should optionally also be saved to a file. (generic file_io method)
         self._print_header()
 
         print_streams = {

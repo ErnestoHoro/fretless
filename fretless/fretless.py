@@ -1,4 +1,6 @@
 import copy
+import os
+import signal
 import sys
 from collections.abc import Mapping
 
@@ -126,8 +128,6 @@ class Fretless:
         self.fretboard_printer.print_fretboard()
 
 
-# -- command line interface & user documentation -----------------------------------------------/100
-
 @click.command(options_metavar='<options>')
 @click.option('--a-pitch-hz', default=440, type=int, show_default=True,
               help='A4 reference frequency in Hz. (432, 428)')
@@ -135,8 +135,7 @@ class Fretless:
               help='Prints a table showing progression of octaves from C0-C10.')
 @click.option('--verbose', is_flag=True,
               help='Will print verbose/debug messages.')
-# Todo: Add export option (--save). Ensure color sequences are removed.
-# Todo: Add signal handler nearby.
+# Todo: Add export option (--save).
 def cli(a_pitch_hz, print_c_octaves, verbose):
     """fretless - A command line music tool
 
@@ -159,6 +158,11 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
 
     Have a good time and fret less.
     """
+    def signal_handler():
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+
     fretless = Fretless(a_pitch_hz=a_pitch_hz, verbose=verbose)
 
     if print_c_octaves:
@@ -173,7 +177,7 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
 
         fretless.tuning_id = fretless.TUNINGS.get_tuning_id_by_choice_id(choice_id=choice_user)
         fretless.main()
-
+        # Todo: Press S to save to file or ENTER to continue.
         input(colored('PRESS KEY TO CONTINUE\n', attrs=['bold']))
 
 
