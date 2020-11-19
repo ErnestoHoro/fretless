@@ -130,7 +130,7 @@ class Fretless:
 
 @click.command(options_metavar='<options>')
 @click.option('--a-pitch-hz', default=440, type=int, show_default=True,
-              help='A4 target frequency in Hz.')
+              help='A4 reference frequency in Hz. (432, 428)')
 @click.option('--print-c-octaves', is_flag=True,
               help='Prints a table showing progression of octaves from C0-C10.')
 @click.option('--verbose', is_flag=True,
@@ -146,14 +146,16 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
      __| |    __/ |    |   __/ \__ \ \__ \  ┃ github.com/ErnestoHoro/fretless ┃
     _|  _|  \___|\__| _| \___| ____/ ____/  ┗ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ┛
 
-    Renders a text based fretboard for different string instruments by a given tuning (id).
+    Renders a text based fretboard for different string instruments by tuning.
 
     \b
-    Render options included:
-    * exact notes (e.g. C4, D#5)
-    * frequencies (rounding option)
-    * context specific customizable colorized print
-      (e.g. C#4 and all B in yellow, by scale or similar)
+    Before you start, please note:
+    * correct text rendering requires either
+      (a) a wide terminal canvas (size up your window) or
+      (b) a horizontally scrollable terminal with disabled line wrap or (...)
+    * colors and special symbols might not be well supported by your terminal
+    * if terminal configuration is too much for you, try to run from embedded
+      ones of IDEs/editors like PyCharm, Visual Studio Code or Sublime Text
 
     Have a good time and fret less.
     """

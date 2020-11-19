@@ -1,3 +1,4 @@
+# Todo: Make them CLI/internal defaults.
 FREQUENCY_ROUND_DECIMALS = 2
 NUMBER_OF_FRETS = 24
 NOTE_COLOR_DEFAULT = None
