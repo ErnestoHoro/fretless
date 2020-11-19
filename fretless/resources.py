@@ -1,8 +1,9 @@
 FREQUENCY_ROUND_DECIMALS = 2
 NUMBER_OF_FRETS = 24
 NOTE_COLOR_DEFAULT = None
-NOTE_PADDING = 7
+NOTE_PADDING = 8
 
+# Todo: Handle enharmonic representations (sharp/flat).
 NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 TUNINGS = {
