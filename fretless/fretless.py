@@ -1,4 +1,6 @@
 import copy
+import os
+import signal
 import sys
 from collections.abc import Mapping
 
@@ -126,17 +128,14 @@ class Fretless:
         self.fretboard_printer.print_fretboard()
 
 
-# -- command line interface & user documentation -----------------------------------------------/100
-
 @click.command(options_metavar='<options>')
 @click.option('--a-pitch-hz', default=440, type=int, show_default=True,
-              help='A4 target frequency in Hz.')
+              help='A4 reference frequency in Hz. (432, 428)')
 @click.option('--print-c-octaves', is_flag=True,
               help='Prints a table showing progression of octaves from C0-C10.')
 @click.option('--verbose', is_flag=True,
               help='Will print verbose/debug messages.')
-# Todo: Add export option (--save). Ensure color sequences are removed.
-# Todo: Add signal handler nearby.
+# Todo: Add export option (--save).
 def cli(a_pitch_hz, print_c_octaves, verbose):
     """fretless - A command line music tool
 
@@ -146,17 +145,24 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
      __| |    __/ |    |   __/ \__ \ \__ \  ┃ github.com/ErnestoHoro/fretless ┃
     _|  _|  \___|\__| _| \___| ____/ ____/  ┗ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ┛
 
-    Renders a text based fretboard for different string instruments by a given tuning (id).
+    Renders a text based fretboard for different string instruments by tuning.
 
     \b
-    Render options included:
-    * exact notes (e.g. C4, D#5)
-    * frequencies (rounding option)
-    * context specific customizable colorized print
-      (e.g. C#4 and all B in yellow, by scale or similar)
+    Before you start, please note:
+    * correct text rendering requires either
+      (a) a wide terminal canvas (size up your window) or
+      (b) a horizontally scrollable terminal with disabled line wrap or (...)
+    * colors and special symbols might not be well supported by your terminal
+    * if terminal configuration is too much for you, try to run from embedded
+      ones of IDEs/editors like PyCharm, Visual Studio Code or Sublime Text
 
     Have a good time and fret less.
     """
+    def signal_handler():
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+
     fretless = Fretless(a_pitch_hz=a_pitch_hz, verbose=verbose)
 
     if print_c_octaves:
@@ -171,7 +177,7 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
 
         fretless.tuning_id = fretless.TUNINGS.get_tuning_id_by_choice_id(choice_id=choice_user)
         fretless.main()
-
+        # Todo: Press S to save to file or ENTER to continue.
         input(colored('PRESS KEY TO CONTINUE\n', attrs=['bold']))
 
 
