@@ -48,7 +48,7 @@ TUNINGS = {
 }
 
 SCALES = {
-    # Todo
+    # Todo: Color codings for scales.
 }
 
 """Note: In MIDI software the middle C can differ from the classical piano specification (C3-C5)."""
@@ -118,3 +118,6 @@ PITCH_RANGES_VOICE = {
     ('A3', 'A5'): 'Mezzo-Soprano',
     ('C4', 'C6'): 'Soprano',
 }
+
+# Todo: Add human frequency ranges with info (audible, voice-range, etc.)
+# Todo: Add intervals with info (see self made music theory docu).

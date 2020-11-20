@@ -33,19 +33,41 @@ class Fretless:
         # (experiment) generic scale (A minor pentatonic)
         # available text colors: red, green, yellow, blue, magenta, cyan, white
         self.colored_notes = {
-            'A': 'red',
-            'C': 'green',
-            'D': 'green',
-            'D#': 'blue',
-            'E': 'green',
-            'F': 'blue',
-            'G': 'green',
+            # root
+            'B': 'red',
+            # dim
+            'A': 'white',
+            'A#': 'white',
+            # lower range
+            'E2': 'yellow',
+            'F#2': 'yellow',
+            'G#2': 'yellow',
+            'C#3': 'magenta',
+            'D3': 'yellow',
+            'E3': 'yellow',
+            # middle range
+            'F#3': 'blue',
+            'G#3': 'blue',
+            'C#4': 'magenta',
+            'D4': 'blue',
+            'E4': 'blue',
+            # B.B. King Major Blues Box (I) range
+            'F#4': 'green',
+            'G#4': 'green',
+            'C#5': 'magenta',
+            'D5': 'green',
+            'E5': 'green',
+            'F#5': 'green',
+            'G#5': 'green',
+            'C#6': 'magenta',
+            'D6': 'green',
+            'E6': 'green',
         }
+        # Todo: Create Color-interaction class. (transpose, etc.)
+        # Todo: Create analysis class for colored notes collections (intervals, possible
+        #  inversions).
 
     def create_fretboard(self):
-        # Todo: Add: :highlight-color, :special-sign, ':special-meaning', etc.
-        #       Add: Additional methods to alternate attributes.
-        #       Add: ~~Kinda full barre matches or something...
         tuning_notation = self.TUNINGS.get_notation(self.tuning_id)
         tuning_description = self.TUNINGS.get_description(self.tuning_id)
 
@@ -113,9 +135,6 @@ class Fretless:
                 dict_base[key] = copy.deepcopy(value)
 
     def _get_color(self, note_long):
-        # Todo: Add secondary parameters, e.g. frequency range (or add get_highlight,
-        #  get_background, etc.).
-        # Todo: Match global if not endswith digit.
         if note_long in self.colored_notes:
             return self.colored_notes.get(note_long)
         elif note_long[:-1] in self.colored_notes:
@@ -135,7 +154,7 @@ class Fretless:
               help='Prints a table showing progression of octaves from C0-C10.')
 @click.option('--verbose', is_flag=True,
               help='Will print verbose/debug messages.')
-# Todo: Add export option (--save).
+# Todo: Add tuning pass through with single print. Add export option (--save).
 def cli(a_pitch_hz, print_c_octaves, verbose):
     """fretless - A command line music tool
 
@@ -154,7 +173,7 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
       (b) a horizontally scrollable terminal with disabled line wrap or (...)
     * colors and special symbols might not be well supported by your terminal
     * if terminal configuration is too much for you, try to run from embedded
-      ones of IDEs/editors like PyCharm, Visual Studio Code or Sublime Text
+      ones of IDEs/editors like PyCharm or Visual Studio Code
 
     Have a good time and fret less.
     """
@@ -177,7 +196,12 @@ def cli(a_pitch_hz, print_c_octaves, verbose):
 
         fretless.tuning_id = fretless.TUNINGS.get_tuning_id_by_choice_id(choice_id=choice_user)
         fretless.main()
-        # Todo: Press S to save to file or ENTER to continue.
+        # Todo: Select color-coding/scale (once they're done).
+        # Todo: Press ENTER to continue.
+        # Todo: Press S to save to file.
+        # Todo: Press H to save to html file.
+        # Todo: Press D to save to text + html file.
+        # Todo: Press LEFT/RIGHT to transpose color coding by a half step.
         input(colored('PRESS KEY TO CONTINUE\n', attrs=['bold']))
 
 

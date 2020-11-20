@@ -58,3 +58,5 @@ class FretboardPrinter:
 
         print(''.join(print_streams['notes']), end='\n')
         print(''.join(print_streams['frequencies']), end='\n')
+
+    # Todo: Add HTML table render + CSS (elsewhere?). (use DOM lib & pretty-print)
